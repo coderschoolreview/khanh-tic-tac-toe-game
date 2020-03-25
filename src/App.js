@@ -9,7 +9,8 @@ export default class App extends Component {
       squares: Array(9).fill(null),
       xIsNext: true,
       history: [],
-      user: ''
+      user: '',
+      score: [],
     }
   }
   setParentsState = (obj) => {
@@ -38,10 +39,10 @@ export default class App extends Component {
     console.log(response);
   }
   getData = async () => {
-    const url = `http://ftw-highscores.herokuapp.com/tictactoe-dev`;
+    const url = `https://ftw-highscores.herokuapp.com/tictactoe-dev`;
     let result = await fetch(url);
     let data = await result.json();
-
+    console.log("getdata",data);
   }
 
   render() {
@@ -56,11 +57,11 @@ export default class App extends Component {
     }
     return (
 
-      <div className="game">
+      <div className="game" >
         <div className="game-board">
           <h2> User info: {this.state.user}</h2>
-
-          <ul>
+<div style={{display: "flex", flexDirection:"row"}}>
+          <ul style={{flex:1}}>
             {
               this.state.history.map((item, idx) => {
                 return (
@@ -73,13 +74,14 @@ export default class App extends Component {
               })
             }
           </ul>
-          <Board
+          <Board 
             squares={this.state.squares}
             xIsNext={this.state.xIsNext}
             history={this.state.history}
             setParentsState={this.setParentsState}
             postData={this.postData}
           />
+          </div>
         </div>
       </div>
     );
