@@ -2,41 +2,65 @@ import React, { Component } from 'react'
 import Square from './Square'
 
 export default class Board extends Component {
-  constructor (props) {
-    super (props);
-    this.state = {
-      squares : Array (9).fill(null),
-      xIsNext: true,
-    }
-  }
-
+  
   handleClick(i) {
-    const squares = this.state.squares.slice ();
-    if (calculateWinner (squares) || squares[i]) {
-      return;
-    }
-    squares[i] = this.state.xIsNext ? 'X': 'O';
-    this.setState ({
+    const squares = this.props.squares.slice ();
+    // if (calculateWinner (squares) || squares[i]) {
+    //   return;
+    // }
+    squares[i] = this.props.xIsNext ? 'X': 'O';
+    this.props.setParentsState ({
       squares: squares,
-      xIsNext: !this.state.xIsNext,
+      xIsNext: !this.props.xIsNext,
+      history: [
+        ...this.props.history,
+        {
+        ...this.props.history,
+        squares: squares,
+        xIsNext: !this.props.xIsNext
+      }]
     })
   }
+
+   calculateWinner = ()=> {
+    const lines = [
+      [0,1,2],
+      [3,4,5],
+      [6,7,8],
+      [0,3,6],
+      [1,4,7],
+      [2,5,8],
+      [0,4,8],
+      [2,4,6],
+    ];
+    for (let i=0; i<lines.length; i++){
+      const [a,b,c] = lines[i];
+      if (this.props.squares[a]&& this.props.squares[a]===this.props.squares[b] && this.props.squares[a]=== this.props.squares[c]) {
+        return this.props.squares[a];
+      }
+    }
+    return null;
+  }
+  
+  
     renderSquare(i) {
         return (
         < Square 
-        value={this.state.squares[i]}
+        winner = {this.calculateWinner()}
+        value={this.props.squares[i]}
         onClick={()=>this.handleClick(i)}
         />
         );
       }
     
       render() {
-        const winner = calculateWinner (this.state.squares);
-        let status;
+        let status='';
+        const winner = this.calculateWinner();
+        console.log('winner',winner)
         if (winner) {
-          status = 'Winner: ' + winner;
+          status = `Winner:  ${winner}`;
         } else {
-          status = 'Next Player: '+ (this.state.xIsNext? 'X':'O');
+          status = this.props.xIsNext? `xIsNext is O`:`xIsNext is X`;
         }
     
         return (
@@ -60,23 +84,4 @@ export default class Board extends Component {
           </div>
         )
       }
-}
-function calculateWinner (squares) {
-  const lines = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [2,4,6],
-  ];
-  for (let i=0; i<lines.length; i++){
-    const [a,b,c] = lines[i];
-    if (squares[a]&& squares[a]===squares[b] && squares[a]=== squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
 }
