@@ -58,6 +58,7 @@ export default class Board extends Component {
         const winner = this.calculateWinner();
         console.log('winner',winner)
         if (winner) {
+          this.props.postData();
           status = `Winner:  ${winner}`;
         } else {
           status = this.props.xIsNext? `xIsNext is O`:`xIsNext is X`;
