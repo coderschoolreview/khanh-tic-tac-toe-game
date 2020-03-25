@@ -46,13 +46,14 @@ export default class App extends Component {
   }
 
   render() {
+    console.log('khanhv2')
     if (!this.state.user) {
       return (
         <FacebookLogin
           appId={process.env.REACT_APP_APIID}
           autoLoad={true}
           fields="name,email,picture"
-          callback={this.responseFacebook} />
+          callback={(resp) => this.responseFacebook(resp)} />
       )
     }
     return (
