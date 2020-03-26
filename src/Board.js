@@ -1,9 +1,15 @@
 import React, { Component } from 'react'
 import Square from './Square'
 
+let startTime = 0;
+let gameOver = false;
+
 export default class Board extends Component {
 
   handleClick(i) {
+    if (startTime === 0) {
+      startTime = Date.now();
+    }
     const squares = this.props.squares.slice();
     squares[i] = this.props.xIsNext ? '⭐' : '🌞';
     this.props.setParentsState({
@@ -102,15 +108,24 @@ export default class Board extends Component {
 
   render() {
     let status = '';
-    const winner = this.calculateWinner();
-    console.log('winner', winner)
-    if (winner) {
-      this.props.postData()
-      status = `Winner:  ${winner}`;
+
+    if(gameOver) {
+      status = "game over"
     } else {
+      let winner = this.calculateWinner();
+      if (winner) {
+        let duration = Date.now() - startTime;
+        this.props.postData(duration)
+        status = `Winner:  ${winner}`;
+        gameOver = true;
+    }
+    // const winner = this.calculateWinner();
+    // console.log('winner', winner)
+    
+    else {
       status = this.props.xIsNext ? `xIsNext is 🌞` : `xIsNext is ⭐`;
     }
-
+  }
     return (
       <div style={{flex:5}}>
         <div className="status">{status}</div>
@@ -126,6 +141,6 @@ export default class Board extends Component {
         </div>
       </div>
     )
-  }
+    }
 }
 
